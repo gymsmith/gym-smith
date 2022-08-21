@@ -92,7 +92,7 @@ public class HuellaTempController {
 		   }
 		   
 		   elapsedTime = elapsedTime + 1;
-		    if (elapsedTime == 200) {//modificar aqui si se requiere reiniciar em menos tiempo
+		    if (elapsedTime == 600) {//modificar aqui si se requiere reiniciar em menos tiempo
 		        break;
 		    }
 		   i++;
@@ -143,7 +143,7 @@ public class HuellaTempController {
 			   System.out.println("/habilitarSensor -> vuelta"+i+" = "+fechaCreacion.get(0).getFecha_creacion()+" - fecha bd = "+ fechabd + " - fecha actual = " + fecha_actual);
 		   }
 		   elapsedTime = elapsedTime + 1;
-		    if (elapsedTime == 200) {//modificar aqui si se requiere reiniciar em menos tiempo
+		    if (elapsedTime == 1000) {//modificar aqui si se requiere reiniciar em menos tiempo
 		        break;
 		    }
 		    //System.out.println(fecha_actual);
