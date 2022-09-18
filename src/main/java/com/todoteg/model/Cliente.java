@@ -2,6 +2,7 @@ package com.todoteg.model;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,6 +24,7 @@ public class Cliente {
 	@Size(min = 10, max = 12)
 	private String telefono;
 	private LocalDate fechaNacimiento;
+	private LocalDateTime fechaCreacion = LocalDateTime.now();
 	private String peso;
 	private String altura;
 	private String sexo;
@@ -105,6 +107,9 @@ public class Cliente {
 	}
 	public void setActivo(Boolean activo) {
 		this.activo = activo;
+	}
+	public LocalDateTime getFechaCreacion() {
+		return fechaCreacion;
 	}
 	
 	

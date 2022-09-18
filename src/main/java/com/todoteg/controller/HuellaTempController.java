@@ -1,14 +1,14 @@
 package com.todoteg.controller;
 
 import java.net.URI;
-
+import java.time.Duration;
 /*import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;*/
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -36,6 +36,7 @@ import com.todoteg.service.IHuellaTempService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+//import reactor.core.publisher.SynchronousSink;
 
 @RestController
 @RequestMapping("/huella_temp") // se establece la direccion url particular
@@ -59,109 +60,75 @@ public class HuellaTempController {
 	
 	@PostMapping("/httpush")
 	public Mono<ResponseEntity<HttpushResponseUtil>> httpush(@RequestParam("timestamp") String timestamp, @RequestParam("token") String token) throws InterruptedException{
-		Thread t = new Thread( ()-> {
-		long fecha_actual = 0;
-		long fecha_bd = 0;
 		
-		System.out.println(timestamp);
+		Map<String, Long> Estado = new HashMap<String, Long>();
+		Estado.put("fecha_actual", (timestamp.equals("null")) ? 0: Long.parseLong(timestamp));
+		Estado.put("fecha_bd", (long) 0);
+		//Estado.put("tiempo_transcurrido", (long) 0);
 		
-		fecha_actual = (timestamp.equals("null")) ? 0: Long.parseLong(timestamp);
-		System.out.println(fecha_actual);
+		return service.ObtenerUpdateTimePorSerial(token, "update_time")
+				.expand(fechaActualizacion -> {
+					if(fechaActualizacion.size() > 0) {
+						if(fechaActualizacion.get(0).getStatusPlantilla() != "Muestras Restantes: 0") {
+							return Mono.empty();
+						}
+						if(fechaActualizacion.get(0).getUpdate_time() != null) {
+							
+							Estado.put("fecha_bd", fechaActualizacion.get(0).getUpdate_time().getTime() / 1000);
+							
+						}
+					}
+					
+					if(Estado.get("fecha_bd") <= Estado.get("fecha_actual") && Estado.get("tiempo_transcurrido") <= 30) {
 
-		long elapsedTime = 0;
-		int i = 0;
-		while (fecha_bd <= fecha_actual) {
-			List<HuellaTemp> updateTime =  service.ObtenerUpdateTimePorSerial(token, "update_time").block();
-			//lista.add(updateTime.getUpdate_time());
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		   if (updateTime.size() > 0) {
-			   
-			   if(updateTime.get(0).getStatusPlantilla()=="Muestras Restantes: 0") {
-				   break;
-			   }
-			   else if(updateTime.get(0).getUpdate_time() != null) {				   
-				   fecha_bd = updateTime.get(0).getUpdate_time().getTime() / 1000;
-			   }
-			   var fechabd = (updateTime.get(0).getUpdate_time() == null)? 0:updateTime.get(0).getUpdate_time().getTime() / 1000;
-			   System.out.println("/httpush -> vuelta"+i+" = "+updateTime.get(0).getUpdate_time()+" - fecha bd = "+ fechabd + " - fecha actual = " + fecha_actual);
-		   }
-		   
-		   elapsedTime = elapsedTime + 1;
-		    if (elapsedTime == 220) {//modificar aqui si se requiere reiniciar em menos tiempo
-		        break;
-		    }
-		   i++;
-		}
-		System.out.println(fecha_actual);
-		System.out.println(fecha_bd);
-		
-		
-		
-		
-		});
-		
-		t.start(); // Inicia el Hilo
-		t.join();  // espera que el hilo anterior termine su ejecucion para continuar con el principal
-		
-		return service.ObtenerHuellaHttpush()
-				.map(httpush -> ResponseEntity
-					.ok() // indica el status code de respuesta
-					.contentType(MediaType.APPLICATION_JSON)
-					.body(httpush)
-				);
-		
-		
+						return service.ObtenerUpdateTimePorSerial(token, "update_time");
+					}
+					
+					
+					return Mono.empty();
+				})
+				.take(Duration.ofSeconds(30))
+				.last()
+				.flatMap(fechaUltimoEstado -> service.ObtenerHuellaHttpush()
+												.map(httpush -> ResponseEntity
+														.ok()
+														.contentType(MediaType.APPLICATION_JSON)
+														.body(httpush)));
 	}
 	
 	@GetMapping("/habilitarSensor")
 	public Mono<ResponseEntity<HashMap<String, Object>>> HabilitarSensor(@RequestParam("timestamp") String timestamp, @RequestParam("token") String token) throws InterruptedException{
-		Thread t = new Thread( ()-> {
-		long fecha_actual = 0;
-		long fecha_bd = 0;
+
+
+		Map<String, Long> Estado = new HashMap<String, Long>();
+		Estado.put("fecha_actual", (timestamp.equals("null")) ? 0: Long.parseLong(timestamp));
+		Estado.put("fecha_bd", (long) 0);
+		//Estado.put("tiempo_transcurrido", (long) 0);
 		
-		fecha_actual = (timestamp.equals("null")) ? 0: Long.parseLong(timestamp);
-		int i = 0;
-		long elapsedTime = 0;
-		while (fecha_bd <= fecha_actual) {
-			List<HuellaTemp> fechaCreacion =  service.ObtenerUpdateTimePorSerial(token,"fecha_creacion").block();
-			//System.out.println(fechaCreacion);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		   if (fechaCreacion.size() > 0) {
-			   fecha_bd = fechaCreacion.get(0).getFecha_creacion().getTime() / 1000;
-			   
-			   var fechabd = (fechaCreacion.get(0).getFecha_creacion() == null)? 0:fechaCreacion.get(0).getFecha_creacion().getTime() / 1000;
-			   System.out.println("/habilitarSensor -> vuelta"+i+" = "+fechaCreacion.get(0).getFecha_creacion()+" - fecha bd = "+ fechabd + " - fecha actual = " + fecha_actual);
-		   }
-		   elapsedTime = elapsedTime + 1;
-		    if (elapsedTime == 220) {//modificar aqui si se requiere reiniciar em menos tiempo
-		        break;
-		    }
-		    //System.out.println(fecha_actual);
-			//System.out.println(fecha_bd);
-		   i++;
-		}
-		});
-		
-		t.start();
-		t.join();
-		return service.HabilitarSensor(token)
-				.map(response -> ResponseEntity
-					.ok() // indica el status code de respuesta
-					.contentType(MediaType.APPLICATION_JSON)
-					.body(response)
-				);
-		
-		
+
+		return service.ObtenerUpdateTimePorSerial(token,"fecha_creacion")
+				.expand(fechaCreacion -> {
+					if (fechaCreacion.size() > 0) {			   
+						Estado.put("fecha_bd", fechaCreacion.get(0).getFecha_creacion().getTime() / 1000);
+						
+					}
+					if(Estado.get("fecha_bd") <= Estado.get("fecha_actual")) {
+						
+						//Estado.put("tiempo_transcurrido", Estado.get("tiempo_transcurrido")+1);
+
+						return service.ObtenerUpdateTimePorSerial(token,"fecha_creacion");
+					}
+					
+					return Mono.empty();
+				})
+				.take(Duration.ofSeconds(20)).last().flatMap(e -> {
+					return service.HabilitarSensor(token)
+							.map(response -> ResponseEntity
+								.ok() // indica el status code de respuesta
+								.contentType(MediaType.APPLICATION_JSON)
+								.body(response)
+							);
+				});
 	}
 	
 	@PostMapping("/ActivarSensor")
@@ -206,29 +173,6 @@ public class HuellaTempController {
 									.contentType(MediaType.APPLICATION_JSON)
 									.body(newHuella));
 				 
-		 
-			/*
-			 * return service.ObtenerHuellaTempPorSerial(token) .map(HuellaTempAEliminar ->
-			 * HuellaTempAEliminar.getId()) .flatMap(service::eliminar) .flatMap(monovoid ->
-			 * service.registrar(nuevaHuella) .map(newUsuario -> ResponseEntity
-			 * .created(URI.create(req.getURI().toString().concat("/").concat(newUsuario.
-			 * getId()))) // se obtiene url dinamica del recurso
-			 * .contentType(MediaType.APPLICATION_JSON) .body(newUsuario)))
-			 * .defaultIfEmpty(ResponseEntity.notFound().build());
-			 */
-				
-/*				.flatMap(monovoid -> {
-					 return service.registrar(nuevaHuella)
-						.map(newUsuario -> ResponseEntity
-								.created(URI.create(req.getURI().toString().concat("/").concat(newUsuario.getId()))) // se obtiene url dinamica del recurso
-								.contentType(MediaType.APPLICATION_JSON)
-								.body(newUsuario));
-				})
-				.defaultIfEmpty(service.registrar(nuevaHuella))
-				.map(newUsuario -> ResponseEntity
-						.created(URI.create(req.getURI().toString().concat("/").concat(newUsuario.getId()))) // se obtiene url dinamica del recurso
-						.contentType(MediaType.APPLICATION_JSON)
-						.body(newUsuario));*/
 	}
 	
 	
@@ -257,12 +201,6 @@ public class HuellaTempController {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(newHuella))
 		.defaultIfEmpty(ResponseEntity.notFound().build());
-		
-//		 service.registrar(HuellaTempBody)
-//				.map(newUsuario -> ResponseEntity
-//						.created(URI.create(req.getURI().toString().concat("/").concat(newUsuario.getId()))) // se obtiene url dinamica del recurso
-//						.contentType(MediaType.APPLICATION_JSON)
-//						.body(newUsuario));
 	}
 	
 	@PutMapping

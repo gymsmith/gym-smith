@@ -56,7 +56,7 @@ public class ClienteController {
 			@RequestParam(name = "size", defaultValue = "7") int size
 			){
 		
-		Sort ordenamiento = Sort.by(Sort.Direction.ASC, "nombres");
+		Sort ordenamiento = Sort.by(Sort.Direction.ASC, "nombres", "fechaCreacion");
 		Pageable pageRequest = PageRequest.of(page, size, ordenamiento);
 		
 		return service.ListarPagina(search, pageRequest)

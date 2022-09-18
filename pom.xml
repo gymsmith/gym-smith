@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.todoteg</groupId>
-	<artifactId>Gestor-GYM</artifactId>
+	<artifactId>Original-Gestor-GYM</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Gestor-GYM</name>
+	<name>Original-Gestor-GYM</name>
 	<description>Proyecto gestor de clientes para un gimnasio</description>
 	<properties>
 		<java.version>11</java.version>
@@ -84,10 +84,14 @@
 	
 
 	<build>
+		<finalName>service-biometric</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+                       <executable>true</executable>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>
