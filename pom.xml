@@ -90,8 +90,13 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+<<<<<<< HEAD
                        <executable>true</executable>
                 </configuration>
+=======
+                                        <executable>true</executable>
+                                </configuration>
+>>>>>>> 055ad2769fc8826c30067f4d5c6633f5eb322d35
 			</plugin>
 		</plugins>
 	</build>
