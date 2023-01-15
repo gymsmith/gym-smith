@@ -13,6 +13,7 @@ public class Plan {
 	private String subtitulo;
 	private Double precio;
 	private String descripcion;
+	//private String descripcionExtendida;
 	
 	
 	public String getId() {

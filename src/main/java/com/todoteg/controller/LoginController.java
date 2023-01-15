@@ -16,7 +16,7 @@ import com.todoteg.security.AuthResponse;
 import com.todoteg.security.ErrorLogin;
 import com.todoteg.security.JWTUtil;
 
-import com.todoteg.service.IUsuarioService;
+import com.todoteg.service.IUserSessionService;
 
 import reactor.core.publisher.Mono;
 
@@ -28,7 +28,7 @@ public class LoginController {
 	private JWTUtil jwtUtil;
 
 	@Autowired
-	private IUsuarioService service;
+	private IUserSessionService service;
 	
 	/*
 	 * @Autowired private IClienteService serviceCliente;
@@ -36,7 +36,7 @@ public class LoginController {
 	
 	@PostMapping("/login")
 	public Mono<ResponseEntity<?>> login(@RequestBody AuthRequest ar){
-		return service.buscarPorUsuario(ar.getUsername())
+		return service.searchUserLogin(ar.getUsername())
 				.map((userDetails) -> {
 					System.out.println(userDetails);
 					// Valida si es que la clave que recibio en el body puede alguna ves llegar a ser el string encriptado que esta en la BD

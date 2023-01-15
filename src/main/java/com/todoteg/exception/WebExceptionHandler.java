@@ -56,9 +56,16 @@ public class WebExceptionHandler extends AbstractErrorWebExceptionHandler {
 		
 		// var en java infiere el tipo de dato de la variable, no se puede cambiar el tipo de dato
 		var httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		Throwable error = getError(request);
+
 		String statusCode = String.valueOf(errorGeneral.get("status")); // se extrae el status code implicado de la peticion http |errorGeneral.get("status")| esto devuelve un object por lo que se castea a un simple string
 		switch(statusCode) { // se evalua el status code, y segun este se emite una respuesta
 		case "500":
+			if (error instanceof InterruptedException exception) {
+	        	mapException.put("message", exception.getMessage());
+	        	httpStatus = HttpStatus.UNAUTHORIZED;
+	        	break;
+	        }
 			mapException.put("status", "500");
 			mapException.put("exception", "ERROR INTERNO DEL SERVIDOR");
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -79,6 +86,9 @@ public class WebExceptionHandler extends AbstractErrorWebExceptionHandler {
 			httpStatus = HttpStatus.I_AM_A_TEAPOT;
 			break;
 		}
+		
+        
+
 		 //Cumplimos con lo que nos pide devolver este metodo
 		return ServerResponse
 				.status(httpStatus) //500

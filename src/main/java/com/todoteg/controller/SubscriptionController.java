@@ -18,21 +18,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.todoteg.model.Plan;
-import com.todoteg.service.IPlanService;
+import com.todoteg.model.Subscription;
+import com.todoteg.service.ISubscriptionService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/plan")
-public class PlanController {
+@RequestMapping("/suscription")
+public class SubscriptionController {
 	
 	@Autowired
-	private IPlanService service;
+	private ISubscriptionService service;
 	
 	@GetMapping
-	public Mono<ResponseEntity<Flux<Plan>>> getAllPlans(){
+	public Mono<ResponseEntity<Flux<Subscription>>> getAllSubscriptions(){
 		return Mono.just(ResponseEntity
 				.ok()
 				.contentType(MediaType.APPLICATION_JSON)
@@ -40,51 +40,51 @@ public class PlanController {
 	}
 	
 	@GetMapping("/{id}")
-	public Mono<ResponseEntity<Plan>> getPlanById(@PathVariable("id") String id){
+	public Mono<ResponseEntity<Subscription>> getSubscriptionById(@PathVariable("id") String id){
 		return service.getById(id)
-				.map(p -> ResponseEntity
+				.map(Subs -> ResponseEntity
 						.ok()
 						.contentType(MediaType.APPLICATION_JSON)
-						.body(p))
+						.body(Subs))
 				.defaultIfEmpty(ResponseEntity.notFound().build()); //build: Cree la entidad de respuesta sin cuerpo.
 	}
 	
 	@PostMapping 
-	public Mono<ResponseEntity<Plan>> register(@Valid @RequestBody Plan p, final ServerHttpRequest req){
-		return service.register(p)
-				.map(newPlan -> ResponseEntity
-						.created(URI.create(req.getURI().toString().concat("/").concat(newPlan.getId())))
+	public Mono<ResponseEntity<Subscription>> register(@Valid @RequestBody Subscription Subs, final ServerHttpRequest req){
+		return service.register(Subs)
+				.map(newSubs -> ResponseEntity
+						.created(URI.create(req.getURI().toString().concat("/").concat(newSubs.getId())))
 						.contentType(MediaType.APPLICATION_JSON)
-						.body(newPlan));
+						.body(newSubs));
 	}
 	
 	@PutMapping("/{id}")
-	public Mono<ResponseEntity<Plan>> modify(@Valid @RequestBody Plan p, @PathVariable String id){
+	public Mono<ResponseEntity<Subscription>> modify(@Valid @RequestBody Subscription Subs, @PathVariable String id){
 		
-		Mono<Plan> PlanBD = service.getById(id);
-		Mono<Plan> PlanBody = Mono.just(p);
+		Mono<Subscription> SubsDB = service.getById(id);
+		Mono<Subscription> SubsBody = Mono.just(Subs);
 		
-		return PlanBD.zipWith(PlanBody, (pBD, pBody)-> {
-			pBD.setTitulo(pBody.getTitulo());
-			pBD.setSubtitulo(pBody.getSubtitulo());
-			pBD.setPrecio(pBody.getPrecio());
-			pBD.setDescripcion(pBody.getDescripcion());
+		return SubsDB.zipWith(SubsBody, (sDB, sBody)-> {
+			sDB.setPlan(sBody.getPlan());
+			sDB.setFechaInicial(sBody.getFechaInicial());
+			sDB.setFechaFinal(sBody.getFechaFinal());
+			sDB.setEstado(sBody.getEstado());
 			
-			return pBD;
+			return sDB;
 		})
-		.flatMap(service::modify) // Mono<Plan>
-		.map(modifiedPlan -> ResponseEntity
+		.flatMap(service::modify) // Mono<Subscripcion>
+		.map(modifiedSuscription -> ResponseEntity
 				.ok()
 				.contentType(MediaType.APPLICATION_JSON)
-				.body(modifiedPlan))
+				.body(modifiedSuscription))
 		.defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 	
 	@DeleteMapping("/{id}")
-	public Mono<ResponseEntity<Void>> deletePlanById(@PathVariable String id){
-		return service.getById(id) // Mono<Plan>
-				.flatMap(planToDelete -> {
-					return service.deleteById(planToDelete.getId())
+	public Mono<ResponseEntity<Void>> deleteSucriptionById(@PathVariable String id){
+		return service.getById(id) // Mono<Subscripcion>
+				.flatMap(SubsToDelete -> {
+					return service.deleteById(SubsToDelete.getId())
 							.thenReturn(new ResponseEntity<Void>(HttpStatus.NO_CONTENT)); // <Mono<ResponseEntity<Void>>
 				})
 				.defaultIfEmpty(new ResponseEntity<Void>(HttpStatus.NOT_FOUND));
