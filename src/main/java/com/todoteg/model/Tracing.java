@@ -13,13 +13,15 @@ public class Tracing {
 	private String id;
 	private Client usuario;
 	private String peso;
-	private String medidaCuello;
+	//private String medidaCuello;
 	private String medidaPecho;
 	private String medidaAbdomen;
-	private String medidaBiceps;
-	private String medidaMuslo;
-	private String medidaPantorrilla;
-	private String medidaHombro;
+	private String medidaBicepD;
+	private String medidaBicepI;
+	private String medidaMusloD;
+	private String medidaMusloI;
+	//private String medidaPantorrilla;
+	//private String medidaHombro;
 	private String medidaCintura;
 	private String medidaCadera;
 	private LocalDate fecha;
@@ -43,12 +45,7 @@ public class Tracing {
 		this.peso = peso;
 	}
 
-	public String getMedidaCuello() {
-		return medidaCuello;
-	}
-	public void setMedidaCuello(String medidaCuello) {
-		this.medidaCuello = medidaCuello;
-	}
+
 	public String getMedidaPecho() {
 		return medidaPecho;
 	}
@@ -61,30 +58,31 @@ public class Tracing {
 	public void setMedidaAbdomen(String medidaAbdomen) {
 		this.medidaAbdomen = medidaAbdomen;
 	}
-	public String getMedidaBiceps() {
-		return medidaBiceps;
+	public String getMedidaBicepD() {
+		return medidaBicepD;
 	}
-	public void setMedidaBiceps(String medidaBiceps) {
-		this.medidaBiceps = medidaBiceps;
+	public void setMedidaBicepD(String medidaBicepD) {
+		this.medidaBicepD = medidaBicepD;
 	}
-	public String getMedidaMuslo() {
-		return medidaMuslo;
+	public String getMedidaBicepI() {
+		return medidaBicepI;
 	}
-	public void setMedidaMuslo(String medidaMuslo) {
-		this.medidaMuslo = medidaMuslo;
+	public void setMedidaBicepI(String medidaBicepI) {
+		this.medidaBicepI = medidaBicepI;
 	}
-	public String getMedidaPantorrilla() {
-		return medidaPantorrilla;
+	public String getMedidaMusloD() {
+		return medidaMusloD;
 	}
-	public void setMedidaPantorrilla(String medidaPantorrilla) {
-		this.medidaPantorrilla = medidaPantorrilla;
+	public void setMedidaMusloD(String medidaMusloD) {
+		this.medidaMusloD = medidaMusloD;
 	}
-	public String getMedidaHombro() {
-		return medidaHombro;
+	public String getMedidaMusloI() {
+		return medidaMusloI;
 	}
-	public void setMedidaHombro(String medidaHombro) {
-		this.medidaHombro = medidaHombro;
+	public void setMedidaMusloI(String medidaMusloI) {
+		this.medidaMusloI = medidaMusloI;
 	}
+
 	public String getMedidaCintura() {
 		return medidaCintura;
 	}

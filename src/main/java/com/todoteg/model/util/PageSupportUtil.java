@@ -31,7 +31,7 @@ public class PageSupportUtil {
 	}
 
 	public Long getTotalElements() {
-		return totalElements[0].get("count");
+		return totalElements.length > 0? totalElements[0].get("count"): 0;
 	}
 
 	public void setTotalElements(Map<String, Long>[] totalElements) {

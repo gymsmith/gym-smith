@@ -1,8 +1,6 @@
 package com.todoteg.controller;
 
 import java.net.URI;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.regex.Pattern;
 
 import javax.validation.Valid;
@@ -64,12 +62,11 @@ public class ClientController {
 		Pattern patternForComparisonOperator = Pattern.compile("^\\$(eq|ne|gt|gte|lt|lte)$");
 		boolean isComparisonOperator = patternForComparisonOperator.matcher(searchOrComparisonOperator).matches(); // Verdadero, si cumple las reglas establecidas por la expresion regular
 		
-		String isObjectId = ObjectId.isValid(searchOrComparisonOperator)? "ObjectId('%s')".formatted(searchOrComparisonOperator): "'%s'".formatted(searchOrComparisonOperator);
+		String isObjectId = ObjectId.isValid(searchOrComparisonOperator)? String.format("ObjectId('%s')", searchOrComparisonOperator): String.format("'%s'", searchOrComparisonOperator);
 		String matchString = isComparisonOperator? 
-				"{ 'subscripcion.fechaFinal': { %s: new Date()}}".formatted(searchOrComparisonOperator) // si recibe un operador de comparacion
+				String.format("{ 'subscripcion.fechaFinal': { %s: new Date()}}",searchOrComparisonOperator) // si recibe un operador de comparacion
 				:
-				"{$or: [{'nombres': { $regex: /^%s|\\s%s\\b/i} }, {'subscripcion.plan._id': %s}]}"
-					.formatted(searchOrComparisonOperator,searchOrComparisonOperator,isObjectId);
+				String.format("{$or: [{'nombres': { $regex: /^%s|\\s%s\\b/i} }, {'subscripcion.plan._id': %s}]}" ,searchOrComparisonOperator,searchOrComparisonOperator,isObjectId);
 		
 		
 		BsonDocument match = BsonDocument.parse(matchString);
@@ -90,7 +87,7 @@ public class ClientController {
 						.body(clientByCC)) // se Transforma a Mono<ResponseEntity<Client>>
 				.defaultIfEmpty(ResponseEntity.notFound().build()); //build: Cree la entidad de respuesta sin cuerpo.
 	}
-	
+	/*
 	@PutMapping("/prueba")
 	public Mono<ResponseEntity<Flux<Client>>> ObjectIdAdd(){
 		Flux<Client> clients = service.getAll()
@@ -116,7 +113,7 @@ public class ClientController {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(clients)); // se envia informacion en el body de la respuesta
 	}
-	
+	*/
 	// @Valid Para hacer cumplir las validaciones propuestas en el modelo
 	
 	@PostMapping
