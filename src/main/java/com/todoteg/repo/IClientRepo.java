@@ -47,7 +47,7 @@ public interface IClientRepo extends IGenericRepo<Client, String> {
 			"{$lookup: {from: 'planes', localField: 'subscripcion.plan._id' , foreignField: '_id' , as: 'subscripcion.plan'}}",
 			"{$unwind: '$subscripcion.plan'}",
 			"{$lookup: {"
-					+ "from: 'seguimiento', let: {customerId:'$identificacion'},"
+					+ "from: 'tracing', let: {customerId:'$identificacion'},"
 					+ "pipeline: [{$match: {$expr:{ $eq: [ '$usuario.identificacion',  '$$customerId' ] }}}, { $project: { usuario:0 } }, {$sort:{_id: -1}},{$limit: 5}],"
 					+ "as: 'listSeguimiento'}"
 					+ "}}",

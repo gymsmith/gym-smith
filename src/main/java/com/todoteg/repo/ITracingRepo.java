@@ -13,8 +13,10 @@ import reactor.core.publisher.Mono;
 
 
 public interface ITracingRepo extends IGenericRepo<Tracing, String> {
-	Flux<Tracing> findByUsuario (HashMap<String, String> usuarioId, Pageable paginacion);
 	
-	@Query(value = "{ usuario: ?0 }", count=true)
-	Mono<Long> allByUsuario(HashMap<String, String> usuarioId);
+	@Query("{'usuario.identificacion': ?0}")
+	Flux<Tracing> findByClient (String usuarioId, Pageable paginacion);
+	
+	@Query(value = "{'usuario.identificacion': ?0}", count=true)
+	Mono<Long> allByUsuario(String usuarioId);
 }

@@ -88,14 +88,12 @@ public class TracingController {
 		
 		return tracingDB.zipWith(tracingBody, (tDB, tBody)-> {
 			tDB.setPeso(tBody.getPeso());
-			tDB.setPeso(tBody.getPeso());
-			tDB.setMedidaCuello(tBody.getMedidaCuello());
 			tDB.setMedidaPecho(tBody.getMedidaPecho());
 			tDB.setMedidaAbdomen(tBody.getMedidaAbdomen());
-			tDB.setMedidaBiceps(tBody.getMedidaBiceps());
-			tDB.setMedidaMuslo(tBody.getMedidaMuslo());
-			tDB.setMedidaPantorrilla(tBody.getMedidaPantorrilla());
-			tDB.setMedidaHombro(tBody.getMedidaHombro());
+			tDB.setMedidaBicepD(tBody.getMedidaBicepD());
+			tDB.setMedidaBicepI(tBody.getMedidaBicepI());
+			tDB.setMedidaMusloD(tBody.getMedidaMusloD());
+			tDB.setMedidaMusloI(tBody.getMedidaMusloI());
 			tDB.setMedidaCintura(tBody.getMedidaCintura());
 			tDB.setMedidaCadera(tBody.getMedidaCadera());
 			

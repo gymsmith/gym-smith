@@ -2,7 +2,6 @@ package com.todoteg.model;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -28,7 +27,7 @@ public class Client {
 	@Size(min = 10, max = 12)
 	private String telefono;
 	private LocalDate fechaNacimiento;
-	private LocalDateTime fechaCreacion = LocalDateTime.now();
+	//private LocalDateTime fechaCreacion = LocalDateTime.now();
 	private String peso;
 	private String altura;
 	private String sexo;
@@ -120,9 +119,10 @@ public class Client {
 	public void setRepresentanteLegal(LegalRepresentativeOfTheMinor representanteLegal) {
 		this.representanteLegal = representanteLegal;
 	}
-	public LocalDateTime getFechaCreacion() {
-		return fechaCreacion;
-	}
+
+	/*
+	 * public LocalDateTime getFechaCreacion() { return fechaCreacion;
+	 }*/
 	public List<Tracing> getListSeguimiento() {
 		return listSeguimiento;
 	}
